@@ -1,36 +1,82 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Survey Gamificata per Workshop
 
-## Getting Started
+Questo progetto è una web app interattiva per la raccolta di feedback a seguito di un workshop sulla gamification. L'app utilizza un'interfaccia "swipe" ispirata a Tinder per rendere divertente e coinvolgente la raccolta dei feedback.
 
-First, run the development server:
+## Descrizione del Progetto
+
+Questa applicazione web consente ai partecipanti del workshop di fornire feedback su diverse attività svolte, utilizzando una modalità di interazione divertente e gamificata:
+
+- Interfaccia swipe (destra per "mi piace", sinistra per "non mi piace")
+- 5 card corrispondenti a diverse attività del workshop
+- Popup dopo ogni swipe per raccogliere dettagli aggiuntivi
+- Integrazione con Google Sheets per salvare tutte le risposte
+- Generazione di QR code per facilitare l'accesso
+
+## Come iniziare
+
+### Configurazione Google Sheets
+
+Prima di avviare l'applicazione, è necessario configurare l'integrazione con Google Sheets:
+
+1. Crea un progetto nella [Google Cloud Console](https://console.cloud.google.com/)
+2. Attiva l'API Google Sheets per il tuo progetto
+3. Crea un account di servizio e scarica il file JSON con le credenziali
+4. Crea un nuovo foglio Google Sheets e condividilo con l'email dell'account di servizio
+5. Copia l'ID del foglio Google Sheets (dalla URL)
+6. Crea un file `.env.local` nella root del progetto con i seguenti valori:
+
+```
+NEXT_PUBLIC_GOOGLE_SHEET_ID=il_tuo_sheet_id
+GOOGLE_SERVICE_ACCOUNT_EMAIL=email_account_servizio@example.com
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...chiave privata...\n-----END PRIVATE KEY-----\n"
+```
+
+### Avvio dell'applicazione
+
+Esegui il server di sviluppo:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Apri [http://localhost:3000](http://localhost:3000) nel tuo browser per vedere l'applicazione.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Generazione del QR Code
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Per facilitare l'accesso all'applicazione durante il workshop, puoi generare un QR code cliccando sul pulsante "Genera QR Code" nell'interfaccia. Questo QR code può essere mostrato ai partecipanti per accedere rapidamente alla survey.
 
-## Learn More
+## Struttura del Workshop
 
-To learn more about Next.js, take a look at the following resources:
+Questa survey è pensata per raccogliere feedback sulle attività del workshop di gamification, che include:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- **10:00**: Arrivo dei partecipanti
+- **10:15**: Inizio con fumetto sulla gamification
+- **10:20**: Icebreaker e apertura kit
+- **10:35**: Risultati icebreaker e distribuzione gemme
+- **10:40**: Dimostrazione premi
+- **10:45**: Fumetto su motivazione intrinseca ed engagement
+- **10:50**: Gioco di ruolo con minigiochi:
+  - Cruciverba
+  - Reverse AI Prompt
+  - Keep Talking Nobody Explodes
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+La survey raccoglie feedback su questi elementi in maniera gamificata, coerente con il tema del workshop stesso.
 
-## Deploy on Vercel
+## Personalizzazione
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Per personalizzare l'applicazione:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- Modifica le domande in `src/data/surveyData.ts`
+- Aggiorna le opzioni di feedback nello stesso file
+- Sostituisci le immagini placeholder in `public/images/` con immagini reali delle attività
+- Personalizza i colori e lo stile nei componenti React
+
+## Deployment
+
+Per il deployment in produzione, si consiglia l'utilizzo di Vercel o Netlify.
+
+```bash
+npm run build
+```
+
+Quando l'applicazione è in produzione, assicurati di configurare correttamente le variabili d'ambiente per l'integrazione con Google Sheets.

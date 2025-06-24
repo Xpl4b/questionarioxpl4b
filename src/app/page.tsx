@@ -1,103 +1,141 @@
-import Image from "next/image";
+'use client';
+
+import { useState } from 'react';
+import SurveySwiper from '@/components/SurveySwiper';
+import { surveyCards, feedbackOptions } from '@/data/surveyData';
+import { SurveyResponse } from '@/types';
+import Image from 'next/image';
+import { QRCodeSVG } from 'qrcode.react';
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+  const [showQRCode, setShowQRCode] = useState(false);
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+  const handleSurveyComplete = async (responses: SurveyResponse[]) => {
+    try {
+      setIsSubmitting(true);
+      
+      const response = await fetch('/api/submit', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ responses }),
+      });
+
+      const result = await response.json();
+      
+      if (result.success) {
+        setIsSubmitted(true);
+      } else {
+        console.error('Error submitting survey:', result.message);
+        alert('Si è verificato un errore durante l\'invio della survey. Riprova più tardi.');
+      }
+    } catch (error) {
+      console.error('Error submitting survey:', error);
+      alert('Si è verificato un errore durante l\'invio della survey. Riprova più tardi.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const generateQRCode = () => {
+    setShowQRCode(true);
+  };
+
+  return (
+    <div className="min-h-screen bg-[#2E254D]">
+      <header className="bg-[#2E254D] border-b border-[#58E2C2]/20 py-4 px-6 shadow-lg">
+        <div className="container mx-auto flex justify-between items-center">
+          <div className="flex items-center gap-3">
+            <h1 className="text-xl font-bold text-[#58E2C2] tracking-wider">XP-L4B</h1>
+            <span className="text-white text-sm">|</span>
+            <h2 className="text-white font-medium">Workshop Feedback</h2>
+          </div>
+          {!showQRCode && (
+            <button
+              onClick={generateQRCode}
+              className="px-6 py-2 bg-[#58E2C2] text-[#2E254D] rounded-full hover:bg-[#4AD1B1] transition shadow-md font-medium"
+            >
+              Genera QR Code
+            </button>
+          )}
         </div>
+      </header>
+
+      <main className="container mx-auto p-4 md:p-8">
+        {showQRCode ? (
+          <div className="flex flex-col items-center justify-center min-h-[70vh]">
+            <h2 className="text-2xl font-bold mb-8 text-center text-white uppercase tracking-wider">SCANSIONA IL QR CODE</h2>
+            <div className="bg-white/10 backdrop-blur-sm p-8 rounded-3xl shadow-lg border border-[#58E2C2]/30">
+              <QRCodeSVG
+                value={window.location.href}
+                size={280}
+                level="H"
+                bgColor="rgba(255,255,255,0.9)"
+                fgColor="#2E254D"
+                includeMargin={true}
+                imageSettings={{
+                  src: '/favicon.ico',
+                  height: 50,
+                  width: 50,
+                  excavate: true,
+                }}
+              />
+            </div>
+            <p className="mt-8 text-[#58E2C2] text-center max-w-md">
+              Condividi questo QR Code con i partecipanti per farli accedere alla survey
+            </p>
+            <button
+              onClick={() => setShowQRCode(false)}
+              className="mt-8 px-6 py-3 bg-[#58E2C2] text-[#2E254D] rounded-full hover:bg-[#4AD1B1] transition shadow-md font-medium"
+            >
+              Torna alla Survey
+            </button>
+          </div>
+        ) : isSubmitted ? (
+          <div className="flex flex-col items-center justify-center min-h-[70vh]">
+            <div className="bg-[#58E2C2]/20 rounded-full p-6 mb-8">
+              <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#58E2C2]">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+            </div>
+            <h2 className="text-2xl font-bold mb-6 text-center text-white uppercase tracking-wider">GRAZIE PER IL TUO FEEDBACK!</h2>
+            <p className="text-[#58E2C2] text-center max-w-md">
+              Le tue risposte sono state registrate con successo. Grazie per aver partecipato alla nostra survey.
+            </p>
+            <button
+              onClick={() => window.location.reload()}
+              className="mt-8 px-6 py-3 bg-[#58E2C2] text-[#2E254D] rounded-full hover:bg-[#4AD1B1] transition shadow-md font-medium"
+            >
+              Nuova Survey
+            </button>
+          </div>
+        ) : (
+          <div className="max-w-lg mx-auto">
+            <div className="mb-10 text-center">
+              <h2 className="text-3xl font-bold text-white uppercase tracking-wider mb-4">VALUTA LA TUA ESPERIENZA</h2>
+              <h3 className="text-[#58E2C2] mb-6 text-xl">Workshop Gamification</h3>
+              
+              <div className="bg-white/10 backdrop-blur-sm rounded-2xl p-6 mt-4 border border-[#58E2C2]/30 shadow-lg">
+                <p className="text-white">
+                  <span className="font-bold text-[#58E2C2]">Come giocare:</span> Swipe a destra se ti è piaciuta l'attività, a sinistra se non ti è piaciuta.
+                </p>
+                <p className="text-white/80 mt-3 text-sm">
+                  Dopo ogni swipe potrai scegliere cosa ti è piaciuto di più e lasciare un commento.
+                </p>
+              </div>
+            </div>
+            <SurveySwiper 
+              cards={surveyCards}
+              feedbackOptions={feedbackOptions}
+              onComplete={handleSurveyComplete}
+            />
+          </div>
+        )}
       </main>
-      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
     </div>
   );
 }
