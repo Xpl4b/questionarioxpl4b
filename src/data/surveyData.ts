@@ -4,12 +4,12 @@ export const surveyCards: CardContent[] = [
   {
     id: 1,
     question: "Fumetti sulla Gamification",
-    image: "/images/7bbbaa3f-6f64-4e77-ac65-a51e34cbde6e.JPG"
+    image: "/images/7f0860da-bdcd-4d65-afcd-024fb575895b.JPG"
   },
   {
     id: 2,
     question: "Attività Icebreaker",
-    image: "/images/7f0860da-bdcd-4d65-afcd-024fb575895b.JPG"
+    image: "/images/7bbbaa3f-6f64-4e77-ac65-a51e34cbde6e.JPG"
   },
   {
     id: 3,
