@@ -5,12 +5,11 @@ import SurveySwiper from '@/components/SurveySwiper';
 import { surveyCards, feedbackOptions } from '@/data/surveyData';
 import { SurveyResponse } from '@/types';
 import Image from 'next/image';
-import { QRCodeSVG } from 'qrcode.react';
 
 export default function Home() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [showQRCode, setShowQRCode] = useState(false);
+
 
   const handleSurveyComplete = async (responses: SurveyResponse[]) => {
     try {
@@ -40,9 +39,7 @@ export default function Home() {
     }
   };
 
-  const generateQRCode = () => {
-    setShowQRCode(true);
-  };
+
 
   return (
     <div className="min-h-screen bg-[#2E254D]">
@@ -53,48 +50,11 @@ export default function Home() {
             <span className="text-white text-sm">|</span>
             <h2 className="text-white font-medium">Workshop Feedback</h2>
           </div>
-          {!showQRCode && (
-            <button
-              onClick={generateQRCode}
-              className="px-6 py-2 bg-[#58E2C2] text-[#2E254D] rounded-full hover:bg-[#4AD1B1] transition shadow-md font-medium"
-            >
-              Genera QR Code
-            </button>
-          )}
         </div>
       </header>
 
       <main className="container mx-auto p-4 md:p-8">
-        {showQRCode ? (
-          <div className="flex flex-col items-center justify-center min-h-[70vh]">
-            <h2 className="text-2xl font-bold mb-8 text-center text-white uppercase tracking-wider">SCANSIONA IL QR CODE</h2>
-            <div className="bg-white/10 backdrop-blur-sm p-8 rounded-3xl shadow-lg border border-[#58E2C2]/30">
-              <QRCodeSVG
-                value={window.location.href}
-                size={280}
-                level="H"
-                bgColor="rgba(255,255,255,0.9)"
-                fgColor="#2E254D"
-                includeMargin={true}
-                imageSettings={{
-                  src: '/favicon.ico',
-                  height: 50,
-                  width: 50,
-                  excavate: true,
-                }}
-              />
-            </div>
-            <p className="mt-8 text-[#58E2C2] text-center max-w-md">
-              Condividi questo QR Code con i partecipanti per farli accedere alla survey
-            </p>
-            <button
-              onClick={() => setShowQRCode(false)}
-              className="mt-8 px-6 py-3 bg-[#58E2C2] text-[#2E254D] rounded-full hover:bg-[#4AD1B1] transition shadow-md font-medium"
-            >
-              Torna alla Survey
-            </button>
-          </div>
-        ) : isSubmitted ? (
+        {isSubmitted ? (
           <div className="flex flex-col items-center justify-center min-h-[70vh]">
             <div className="bg-[#58E2C2]/20 rounded-full p-6 mb-8">
               <svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#58E2C2]">
@@ -104,18 +64,42 @@ export default function Home() {
             </div>
             <h2 className="text-2xl font-bold mb-6 text-center text-white uppercase tracking-wider">GRAZIE PER IL TUO FEEDBACK!</h2>
             <p className="text-[#58E2C2] text-center max-w-md">
-              Le tue risposte sono state registrate con successo. Grazie per aver partecipato alla nostra survey.
+              Le tue risposte sono state registrate con successo e sono completamente anonime. Grazie per aver partecipato alla nostra survey.
             </p>
-            <button
-              onClick={() => window.location.reload()}
-              className="mt-8 px-6 py-3 bg-[#58E2C2] text-[#2E254D] rounded-full hover:bg-[#4AD1B1] transition shadow-md font-medium"
-            >
-              Nuova Survey
-            </button>
+            
+            <div className="mt-10 flex justify-center gap-6 items-center">
+              <p className="text-white">Seguici sui social:</p>
+              <a 
+                href="https://www.instagram.com/xpl4b2" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all"
+                aria-label="Instagram"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-pink-400">
+                  <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                  <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                  <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                </svg>
+              </a>
+              <a 
+                href="https://www.linkedin.com/company/xp-l4b/" 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition-all"
+                aria-label="LinkedIn"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-400">
+                  <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"></path>
+                  <rect x="2" y="9" width="4" height="12"></rect>
+                  <circle cx="4" cy="4" r="2"></circle>
+                </svg>
+              </a>
+            </div>
           </div>
         ) : (
           <div className="max-w-lg mx-auto">
-            <div className="mb-10 text-center">
+            <div className="mb-20 text-center">
               <h2 className="text-3xl font-bold text-white uppercase tracking-wider mb-4">VALUTA LA TUA ESPERIENZA</h2>
               <h3 className="text-[#58E2C2] mb-6 text-xl">Workshop Gamification</h3>
               
@@ -124,7 +108,7 @@ export default function Home() {
                   <span className="font-bold text-[#58E2C2]">Come giocare:</span> Swipe a destra se ti è piaciuta l'attività, a sinistra se non ti è piaciuta.
                 </p>
                 <p className="text-white/80 mt-3 text-sm">
-                  Dopo ogni swipe potrai scegliere cosa ti è piaciuto di più e lasciare un commento.
+                  Dopo ogni swipe potrai scegliere cosa ti è piaciuto di più e lasciare un commento. Le tue risposte sono completamente anonime.
                 </p>
               </div>
             </div>

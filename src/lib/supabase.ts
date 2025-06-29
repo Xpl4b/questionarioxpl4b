@@ -1,6 +1,6 @@
 import { createClient } from '@supabase/supabase-js';
 import { SurveyResponse } from '../types';
-import { surveyCards } from '../data/surveyData';
+import { surveyCards, feedbackOptions } from '../data/surveyData';
 
 // Configurazione del client Supabase
 const getSupabaseClient = () => {
@@ -54,10 +54,18 @@ export const saveToSupabase = async (responses: SurveyResponse[]): Promise<boole
         // Trova la domanda corrispondente all'ID della card
         const cardQuestion = surveyCards.find(card => card.id === response.cardId)?.question || `Domanda ID ${response.cardId}`;
         
+        // Converti gli ID delle opzioni nei testi corrispondenti
+        const optionTexts = response.selectedOptions 
+          ? response.selectedOptions.map(optionId => {
+              const option = feedbackOptions.find(opt => opt.id === Number(optionId));
+              return option ? option.text : `Opzione ${optionId}`;
+            }).join(', ')
+          : '';
+        
         return {
           question: cardQuestion,
           liked: response.liked,
-          selected_options: response.selectedOptions ? response.selectedOptions.join(', ') : '',
+          selected_options: optionTexts,
           custom_feedback: response.customFeedback || '',
           created_at: new Date().toISOString()
         };

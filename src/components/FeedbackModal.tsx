@@ -68,29 +68,33 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
           </h3>
         </div>
         
-        <div className="mb-8">
-          <p className="mb-4 text-[#58E2C2] font-medium">Seleziona le opzioni (puoi selezionarne più di una):</p>
-          <div className="flex flex-wrap gap-3">
-            {options.map(option => (
-              <button
-                key={option.id}
-                className={`px-4 py-2 rounded-full text-sm transition-all transform ${
-                  selectedOptions.includes(option.id)
-                    ? 'bg-[#58E2C2] text-[#2E254D] shadow-lg scale-105 font-medium'
-                    : 'bg-white/10 text-white hover:bg-white/20 border border-[#58E2C2]/30'
-                }`}
-                onClick={() => handleOptionToggle(option.id)}
-              >
-                {option.text}
-              </button>
-            ))}
+        {liked && (
+          <div className="mb-8">
+            <p className="mb-4 text-[#58E2C2] font-medium">Seleziona le opzioni (puoi selezionarne più di una):</p>
+            <div className="flex flex-wrap gap-3">
+              {options.map(option => (
+                <button
+                  key={option.id}
+                  className={`px-4 py-2 rounded-full text-sm transition-all transform ${
+                    selectedOptions.includes(option.id)
+                      ? 'bg-[#58E2C2] text-[#2E254D] shadow-lg scale-105 font-medium'
+                      : 'bg-white/10 text-white hover:bg-white/20 border border-[#58E2C2]/30'
+                  }`}
+                  onClick={() => handleOptionToggle(option.id)}
+                >
+                  {option.text}
+                </button>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
         
         <div className="mb-8">
-          <label htmlFor="feedback" className="block mb-3 text-[#58E2C2] font-medium">
-            Commenti aggiuntivi (opzionale):
-          </label>
+          {liked && (
+            <label htmlFor="feedback" className="block mb-3 text-[#58E2C2] font-medium">
+              Commenti aggiuntivi (opzionale):
+            </label>
+          )}
           <div className="relative">
             <textarea
               id="feedback"
@@ -98,7 +102,7 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
               rows={3}
               value={customFeedback}
               onChange={(e) => setCustomFeedback(e.target.value)}
-              placeholder="La tua opinione è importante! Condividi i tuoi pensieri..."
+              placeholder={liked ? "La tua opinione è importante! Condividi i tuoi pensieri..." : "Lascia un commento..."}
             />
             <div className="absolute bottom-3 right-3 text-xs text-[#58E2C2]/80">
               {customFeedback.length} / 200 caratteri
@@ -106,7 +110,16 @@ const FeedbackModal: React.FC<FeedbackModalProps> = ({
           </div>
         </div>
         
-        <div className="flex justify-center gap-2">
+        <div className="flex justify-center gap-4">
+          <button
+            onClick={onClose}
+            className="px-6 py-3 bg-white/10 text-white border border-white/20 rounded-full hover:bg-white/20 transform transition-all shadow-md font-medium flex items-center"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
+              <path fillRule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clipRule="evenodd" />
+            </svg>
+            Torna indietro
+          </button>
           <button
             onClick={handleSubmit}
             className="px-8 py-3 bg-[#58E2C2] text-[#2E254D] rounded-full hover:bg-[#4AD1B1] transform transition-all hover:scale-105 shadow-lg font-medium flex items-center"

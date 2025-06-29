@@ -91,7 +91,7 @@ const SurveySwiper: React.FC<SurveySwiperProps> = ({
         </div>
       ) : (
         <div className="flex justify-center items-center h-[500px] w-full">
-          <div className="relative w-full max-w-sm h-[400px] px-4">
+          <div className="relative w-full max-w-lg h-[400px] px-4">
             {cards.map((card, index) => (
               <div className="absolute" key={card.id}>
                 {index === currentIndex && (
@@ -151,21 +151,27 @@ const SurveySwiper: React.FC<SurveySwiperProps> = ({
           
           <div className="flex justify-center gap-10 mt-4">
             <div className="text-center">
-              <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 border border-red-500/30 backdrop-blur-sm mb-3 shadow-lg hover:bg-white/20 transition-all">
+              <button 
+                onClick={handleDislikeClick}
+                className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 border border-red-500/30 backdrop-blur-sm mb-3 shadow-lg hover:bg-white/20 transition-all cursor-pointer"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-red-400">
                   <line x1="18" y1="6" x2="6" y2="18"></line>
                   <line x1="6" y1="6" x2="18" y2="18"></line>
                 </svg>
-              </div>
+              </button>
               <p className="text-sm text-white font-medium">Non mi piace</p>
             </div>
             
             <div className="text-center">
-              <div className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 border border-[#58E2C2]/50 backdrop-blur-sm mb-3 shadow-lg hover:bg-white/20 transition-all">
+              <button 
+                onClick={handleLikeClick}
+                className="w-14 h-14 flex items-center justify-center rounded-full bg-white/10 border border-[#58E2C2]/50 backdrop-blur-sm mb-3 shadow-lg hover:bg-white/20 transition-all cursor-pointer"
+              >
                 <svg xmlns="http://www.w3.org/2000/svg" width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#58E2C2]">
                   <path d="M20 6L9 17l-5-5"></path>
                 </svg>
-              </div>
+              </button>
               <p className="text-sm text-white font-medium">Mi piace</p>
             </div>
           </div>
